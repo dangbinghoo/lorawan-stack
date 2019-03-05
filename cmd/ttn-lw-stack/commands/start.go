@@ -37,6 +37,7 @@ import (
 	"go.thethings.network/lorawan-stack/pkg/networkserver"
 	nsredis "go.thethings.network/lorawan-stack/pkg/networkserver/redis"
 	"go.thethings.network/lorawan-stack/pkg/redis"
+	ttgcups "go.thethings.network/lorawan-stack/pkg/thethingsgateway/cups"
 	"go.thethings.network/lorawan-stack/pkg/web"
 )
 
@@ -200,6 +201,9 @@ var (
 				logger.Info("Setting up GCS")
 				cups := config.GCS.BasicStation.NewServer(c)
 				_ = cups
+
+				ttgCups := ttgcups.Config{}.NewServer(c)
+				_ = ttgCups
 			}
 
 			if rootRedirect != nil {
