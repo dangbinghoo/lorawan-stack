@@ -12,26 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# fmt all packages
-go.fmt:
-	@$(log) "Formatting `$(GO_PACKAGES_ABSOLUTE) | $(count)` go packages"
-	@[[ -z "`$(GO_PACKAGES_ABSOLUTE) | xargs $(GO_FMT) -w -s | tee -a /dev/stderr`" ]]
+go.fmt: $(MAGE)
+	@$(MAGE) go:fmt
 
-# lint all packages, exiting when errors occur
-go.lint:
-	@GO111MODULE=on $(GO) run github.com/mgechev/revive -config .revive.toml -formatter stylish ./pkg/... ./cmd/...
+go.lint: $(MAGE)
+	@$(MAGE) go:lint
 
-# fix misspellings in all packages
-go.misspell:
-	@$(log) "Fixing misspellings in `$(GO_PACKAGES) | $(count)` go packages"
-	@[[ -z "`$(GO_PACKAGES_ABSOLUTE) | GO111MODULE=on xargs $(GO) run github.com/client9/misspell/cmd/misspell -w | tee -a /dev/stderr`" ]]
+go.misspell: $(MAGE)
+	@$(MAGE) go:misspell
 
-# unconvert all packages
-go.unconvert:
-	@$(log) "Unconverting `$(GO_PACKAGES) | $(count)` go packages"
-	@[[ -z "`$(GO_PACKAGES) | GO111MODULE=on xargs $(GO) run github.com/mdempsky/unconvert -safe -apply | tee -a /dev/stderr`" ]]
+go.unconvert: $(MAGE)
+	@$(MAGE) go:unconvert
 
-# run all quality on all files
-go.quality: go.fmt go.misspell go.unconvert go.lint
+go.quality: $(MAGE)
+	@$(MAGE) go:quality
 
 # vim: ft=make
