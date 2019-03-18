@@ -14,7 +14,6 @@
 
 
 import React from 'react'
-import { withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from '../prop-types'
 
@@ -27,7 +26,6 @@ import { withEnv } from '../../lib/components/env'
  * If no user is authenticated, it renders the Landing view.
  */
 @withEnv
-@withRouter
 @connect(state => ({
   fetching: state.user.fetching,
   user: state.user.user,
@@ -47,14 +45,16 @@ class Auth extends React.PureComponent {
     }
 
     if (!Boolean(user)) {
-      return (
-        <Redirect
-          to={{
-            pathname: `${env.app_root}/login`,
-            state: { from: this.props.location.pathname },
-          }}
-        />
-      )
+      // Compose the redirect path, to send the user back to after login
+      const redirectPath = window.location.pathname.substring(env.app_root.length)
+      let loc = `${env.app_root}/login`
+      if (redirectPath !== '') {
+        loc += `?path=${redirectPath}`
+      }
+
+      // We need a full reload here to ensure the new state cookie is being set
+      window.location = loc
+      return null
     }
 
     return children
