@@ -17,6 +17,7 @@ package cups
 import (
 	"context"
 	"fmt"
+	"github.com/gogo/protobuf/types"
 	"net"
 	"net/http"
 	"net/url"
@@ -42,10 +43,18 @@ type gatewayInfoResponse struct {
 }
 
 func (s *Server) handleGatewayInfo(c echo.Context) error {
+	gatewayInfoFieldMask := types.FieldMask{Paths: []string{
+		"frequency_plan_id",
+		"gateway_server_address",
+		"update_channel",
+		"auto_update",
+	}}
+
 	ctx := s.getContext(c)
 	gatewayIDs := c.Get(gatewayIDKey).(ttnpb.GatewayIdentifiers)
 	if gateway, err := s.getRegistry(ctx, &gatewayIDs).Get(ctx, &ttnpb.GetGatewayRequest{
 		GatewayIdentifiers: gatewayIDs,
+		FieldMask:          gatewayInfoFieldMask,
 	}, s.getAuth(c)); err != nil {
 		return err
 	} else {
