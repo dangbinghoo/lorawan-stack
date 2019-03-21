@@ -17,17 +17,17 @@ package cups
 import (
 	"context"
 	"fmt"
-	"go.thethings.network/lorawan-stack/pkg/pfconfig/shared"
-	"go.thethings.network/lorawan-stack/pkg/rpcmetadata"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 	"net"
 	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/labstack/echo"
+	"go.thethings.network/lorawan-stack/pkg/pfconfig/shared"
+	"go.thethings.network/lorawan-stack/pkg/rpcmetadata"
 	"go.thethings.network/lorawan-stack/pkg/ttnpb"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 // gatewayInfoResponse represents a minimal gateway info response for The Things Gateway.

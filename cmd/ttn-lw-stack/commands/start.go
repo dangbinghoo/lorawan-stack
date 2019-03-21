@@ -37,7 +37,6 @@ import (
 	"go.thethings.network/lorawan-stack/pkg/networkserver"
 	nsredis "go.thethings.network/lorawan-stack/pkg/networkserver/redis"
 	"go.thethings.network/lorawan-stack/pkg/redis"
-	ttgcups "go.thethings.network/lorawan-stack/pkg/thethingsgateway/cups"
 	"go.thethings.network/lorawan-stack/pkg/web"
 )
 
@@ -202,7 +201,7 @@ var (
 				cups := config.GCS.BasicStation.NewServer(c)
 				_ = cups
 
-				ttgCups := ttgcups.Config{}.NewServer(c)
+				ttgCups := config.GCS.TheThingsGateway.NewServer(c)
 				_ = ttgCups
 			}
 
