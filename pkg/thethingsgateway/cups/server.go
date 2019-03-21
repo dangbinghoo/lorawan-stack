@@ -16,13 +16,17 @@ package cups
 
 import (
 	"context"
-	"github.com/labstack/echo"
+
+	echo "github.com/labstack/echo/v4"
 	"go.thethings.network/lorawan-stack/pkg/component"
 	"go.thethings.network/lorawan-stack/pkg/ttnpb"
 	"go.thethings.network/lorawan-stack/pkg/web"
 )
 
-const defaultFirmwarePath = "https://thethingsproducts.blob.core.windows.net/the-things-gateway/v1"
+const (
+	defaultFirmwarePath  = "https://thethingsproducts.blob.core.windows.net/the-things-gateway/v1"
+	defaultUpdateChannel = "stable"
+)
 
 // Config is the configuration of the The Things Gateay CUPS server.
 type Config struct {
@@ -40,6 +44,9 @@ func (conf Config) NewServer(c *component.Component, customOpts ...Option) *Serv
 	}
 	if conf.Default.FirmwareURL == "" {
 		opts = append(opts, WithDefaultFirmwareURL(defaultFirmwarePath))
+	}
+	if conf.Default.UpdateChannel == "" {
+		opts = append(opts, WithDefaultUpdateChannel(defaultUpdateChannel))
 	}
 	s := NewServer(c, append(opts, customOpts...)...)
 	c.RegisterWeb(s)

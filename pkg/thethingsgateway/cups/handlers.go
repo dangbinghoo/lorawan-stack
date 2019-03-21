@@ -17,13 +17,13 @@ package cups
 import (
 	"context"
 	"fmt"
-	"github.com/gogo/protobuf/types"
 	"net"
 	"net/http"
 	"net/url"
 	"strings"
 
-	"github.com/labstack/echo"
+	"github.com/gogo/protobuf/types"
+	echo "github.com/labstack/echo/v4"
 	"go.thethings.network/lorawan-stack/pkg/pfconfig/shared"
 	"go.thethings.network/lorawan-stack/pkg/rpcmetadata"
 	"go.thethings.network/lorawan-stack/pkg/ttnpb"
@@ -49,7 +49,6 @@ func (s *Server) handleGatewayInfo(c echo.Context) error {
 		"update_channel",
 		"auto_update",
 	}}
-
 	ctx := s.getContext(c)
 	gatewayIDs := c.Get(gatewayIDKey).(ttnpb.GatewayIdentifiers)
 	if gateway, err := s.getRegistry(ctx, &gatewayIDs).Get(ctx, &ttnpb.GetGatewayRequest{
