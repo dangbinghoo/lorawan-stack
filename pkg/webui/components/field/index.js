@@ -25,6 +25,7 @@ import Icon from '../icon'
 import Input from '../input'
 import Checkbox from '../checkbox'
 import Select from '../select'
+import RadioButton from '../radio-button'
 import Message from '../../lib/components/message'
 
 import style from './field.styl'
@@ -59,6 +60,8 @@ const checkboxAllowedProps = [
   'onBlur',
   'onChange',
   'disabled',
+  'name',
+  'checked',
 ]
 
 const selectAllowedProps = [
@@ -83,6 +86,7 @@ const selectAllowedProps = [
 const getAllowedPropsByType = function (type) {
   switch (type) {
   case 'checkbox':
+  case 'radio':
     return checkboxAllowedProps
   case 'select':
     return selectAllowedProps
@@ -108,7 +112,8 @@ const component = function (type) {
   switch (type) {
   case 'checkbox':
     return Checkbox
-
+  case 'radio':
+    return RadioButton
   case 'text':
   case 'number':
   case 'password':
@@ -130,6 +135,10 @@ const Field = function (props) {
     props.setFieldValue(props.name, value)
     if (props.validateOnChange) {
       props.setFieldTouched(props.name, true)
+    }
+
+    if (props.onChange) {
+      props.onChange(value)
     }
   }
 
@@ -160,12 +169,11 @@ const Field = function (props) {
   } = props
 
   // Underscored assignment due to naming conflict
-
   let _value = props.value
   let _error = props.error
   let _touched = props.touched
+  const id = props.id || name
   const formatMessage = content => typeof content === 'object' ? props.intl.formatMessage(content) : content
-
   if (form) {
     const {
       values = {},
@@ -175,6 +183,10 @@ const Field = function (props) {
     // preserve default values for different inputs
     // make sure the checkbox component gets `false` as a falsy value
     _value = getByPath(values, name) || (type === 'checkbox' ? false : '')
+    if (type === 'radio') {
+      rest.checked = _value === props.value
+      _value = props.value
+    }
     _error = getByPath(errors, name)
     _touched = touched[name]
     rest.value = _value
@@ -206,13 +218,13 @@ const Field = function (props) {
 
   return (
     <div className={classname}>
-      <label className={style.label} htmlFor={name}>
+      <label className={style.label} htmlFor={id}>
         <Message content={title} className={style.title} />
         <span className={style.reqicon}>&middot;</span>
       </label>
       <Component
         className={style.component}
-        id={name}
+        id={id}
         {...filterPropsByType(type, rest)}
       />
       {hasMessages
@@ -263,6 +275,10 @@ Field.propTypes = {
    * This is necessary to map form values correctly.
    */
   form: PropTypes.bool,
+  /** Optional hook for change events of the field, handy for arbitrary actions
+   * connected to field changes.
+   */
+  onChange: PropTypes.function,
 }
 
 const Err = function (props) {
