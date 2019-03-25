@@ -66,8 +66,57 @@ const getApplicationApiKeyDataLogic = createLogic({
   },
 })
 
+const getApplicationCollaboratorsLogic = createLogic({
+  type: application.GET_APP_COLLABORATORS_LIST,
+  async process ({ getState, action }, dispatch, done) {
+    const { id } = action
+    try {
+      const res = await api.application.collaborators.list(id)
+      const collaborators = res.collaborators.map(function (collaborator) {
+        const { ids, ...rest } = collaborator
+        const isUser = !!ids.user_ids
+        const collaboratorId = isUser
+          ? ids.user_ids.user_id
+          : ids.organization_ids.organization_id
+
+        return {
+          id: collaboratorId,
+          isUser,
+          ...rest,
+        }
+      })
+
+      dispatch(
+        application.getApplicationCollaboratorsListSuccess(
+          id,
+          collaborators,
+          res.totalCount
+        )
+      )
+    } catch (e) {
+      dispatch(application.getApplicationCollaboratorsListFailure(id, e))
+    }
+
+    done()
+  },
+})
+
+const getApplicationCollaboratorDataLogic = createLogic({
+  type: application.GET_APP_COLLABORATOR,
+  async process ({ getState, action }, dispatch, done) {
+    const { id } = action
+
+    dispatch(application.getApplicationCollaboratorsList(id))
+    dispatch(applications.getApplicationsRightsList(id))
+
+    done()
+  },
+})
+
 export default [
   getApplicationLogic,
   getApplicationApiKeysLogic,
   getApplicationApiKeyDataLogic,
+  getApplicationCollaboratorsLogic,
+  getApplicationCollaboratorDataLogic,
 ]
