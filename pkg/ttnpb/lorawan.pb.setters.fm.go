@@ -784,6 +784,37 @@ func (dst *DataRate) SetFields(src *DataRate, paths ...string) error {
 	return nil
 }
 
+func (dst *Scheduled) SetFields(src *Scheduled, paths ...string) error {
+	for name, subs := range _processPaths(append(paths[:0:0], paths...)) {
+		switch name {
+		case "rx_window":
+			if len(subs) > 0 {
+				return fmt.Errorf("'rx_window' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.RxWindow = src.RxWindow
+			} else {
+				var zero uint32
+				dst.RxWindow = zero
+			}
+		case "class":
+			if len(subs) > 0 {
+				return fmt.Errorf("'class' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.Class = src.Class
+			} else {
+				var zero Class
+				dst.Class = zero
+			}
+
+		default:
+			return fmt.Errorf("invalid field: '%s'", name)
+		}
+	}
+	return nil
+}
+
 func (dst *TxSettings) SetFields(src *TxSettings, paths ...string) error {
 	for name, subs := range _processPaths(append(paths[:0:0], paths...)) {
 		switch name {
@@ -903,6 +934,27 @@ func (dst *TxSettings) SetFields(src *TxSettings, paths ...string) error {
 				dst.Time = src.Time
 			} else {
 				dst.Time = nil
+			}
+		case "scheduled":
+			if len(subs) > 0 {
+				newDst := dst.Scheduled
+				if newDst == nil {
+					newDst = &Scheduled{}
+					dst.Scheduled = newDst
+				}
+				var newSrc *Scheduled
+				if src != nil {
+					newSrc = src.Scheduled
+				}
+				if err := newDst.SetFields(newSrc, subs...); err != nil {
+					return err
+				}
+			} else {
+				if src != nil {
+					dst.Scheduled = src.Scheduled
+				} else {
+					dst.Scheduled = nil
+				}
 			}
 
 		default:

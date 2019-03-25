@@ -240,6 +240,12 @@ message DataRate {
   };
 }
 
+
+message Scheduled{
+  uint32 rx_window = 1;
+  Class class = 2;
+}
+
 // TxSettings contains the settings for a transmission.
 // This message is used on both uplink and downlink.
 // On downlink, this is a scheduled transmission.
@@ -272,6 +278,8 @@ message TxSettings {
   // Time of the gateway when the uplink message was received, or when the downlink message should be transmitted.
   // For downlink, this requires the gateway to have GPS time synchronization.
   google.protobuf.Timestamp time = 11 [(gogoproto.stdtime) = true];
+  // Additional information on the scheduled downlink necessary for the BasicStation LNS gateways.
+  Scheduled scheduled = 12;
 }
 
 message GatewayAntennaIdentifiers {
