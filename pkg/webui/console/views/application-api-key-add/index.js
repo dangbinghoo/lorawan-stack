@@ -193,6 +193,7 @@ export default class ApplicationApiKeyAdd extends React.Component {
               <FieldGroup
                 name="rights"
                 title={sharedMessages.rights}
+                horizontal
               >
                 {rightsItems}
               </FieldGroup>

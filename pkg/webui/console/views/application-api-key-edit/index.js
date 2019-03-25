@@ -225,6 +225,7 @@ export default class ApplicationApiKeyEdit extends React.Component {
               />
               <FieldGroup
                 name="rights"
+                horizontal
                 title={sharedMessages.rights}
               >
                 {rightsItems}
