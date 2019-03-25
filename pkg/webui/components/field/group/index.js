@@ -13,10 +13,11 @@
 // limitations under the License.
 
 import React from 'react'
+import classnames from 'classnames'
 
 import Message from '../../../lib/components/message'
 import PropTypes from '../../../lib/prop-types'
-import Field, { FieldError } from '..'
+import { FieldError } from '..'
 
 import style from './group.styl'
 
@@ -27,34 +28,45 @@ class FieldGroup extends React.Component {
       children,
       name,
       title,
-      titleComponent = 'h4',
-      errors,
+      titleComponent = 'span',
+      errors = {},
+      horizontal,
     } = this.props
     const fields = React.Children.map(children, function (Child) {
-      if (React.isValidElement(Child) && Child.type === Field) {
-        const fieldName = `${name}.${Child.props.name}`
+      if (React.isValidElement(Child) && Child.type.name === 'Field') {
+        const id = Child.props.type === 'checkbox'
+          ? `${name}.${Child.props.name}`
+          : `${name}.${Child.props.value}`
+        const fieldName = Child.props.type === 'checkbox' ? id : name
+        const classNames = classnames(style.field, className)
         return React.cloneElement(Child, {
           ...Child.props,
+          className: classNames,
           name: fieldName,
+          id,
         })
       }
 
       return Child
     })
 
+    const classNames = classnames(style.container, className, {
+      [style.horizontal]: horizontal,
+    })
 
     const error = errors[name]
     return (
-      <div className={className}>
-        <div className={style.header}>
-          <Message
-            className={style.headerTitle}
-            component={titleComponent}
-            content={title}
-          />
-          {error && <FieldError name={name} error={error} />}
-        </div>
-        {fields}
+      <div className={classNames}>
+        <Message
+          className={style.headerTitle}
+          component={titleComponent}
+          content={title}
+        />
+        {error && <FieldError name={name} error={error} />}
+        <div
+          className={style.fields}
+          children={fields}
+        />
       </div>
     )
   }
