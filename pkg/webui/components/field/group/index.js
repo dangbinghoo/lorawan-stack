@@ -31,6 +31,7 @@ class FieldGroup extends React.Component {
       titleComponent = 'span',
       errors = {},
       horizontal,
+      columns,
     } = this.props
     const fields = React.Children.map(children, function (Child) {
       if (React.isValidElement(Child) && Child.type.name === 'Field') {
@@ -38,7 +39,9 @@ class FieldGroup extends React.Component {
           ? `${name}.${Child.props.name}`
           : `${name}.${Child.props.value}`
         const fieldName = Child.props.type === 'checkbox' ? id : name
-        const classNames = classnames(style.field, className)
+        const classNames = classnames(style.field, className, {
+          [style.columns]: columns,
+        })
         return React.cloneElement(Child, {
           ...Child.props,
           className: classNames,
@@ -76,6 +79,8 @@ FieldGroup.propTypes = {
   name: PropTypes.string.isRequired,
   title: PropTypes.message,
   errors: PropTypes.object,
+  horizontal: PropTypes.bool,
+  columns: PropTypes.bool,
 }
 
 export default FieldGroup
