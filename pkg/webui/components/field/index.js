@@ -273,6 +273,7 @@ const Err = function (props) {
   } = props
 
   const content = error || warning || ''
+  const contentValues = content.values || {}
 
   const icon = error ? 'error' : 'warning'
 
@@ -290,6 +291,7 @@ const Err = function (props) {
         content={content.format || content.error_description || content.message || content}
         values={{
           name: <Message content={name} className={style.name} />,
+          ...contentValues,
         }}
       />
     </div>
