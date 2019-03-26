@@ -784,7 +784,7 @@ func (dst *DataRate) SetFields(src *DataRate, paths ...string) error {
 	return nil
 }
 
-func (dst *Scheduled) SetFields(src *Scheduled, paths ...string) error {
+func (dst *RequestInfo) SetFields(src *RequestInfo, paths ...string) error {
 	for name, subs := range _processPaths(append(paths[:0:0], paths...)) {
 		switch name {
 		case "rx_window":
@@ -796,6 +796,16 @@ func (dst *Scheduled) SetFields(src *Scheduled, paths ...string) error {
 			} else {
 				var zero uint32
 				dst.RxWindow = zero
+			}
+		case "antenna_index":
+			if len(subs) > 0 {
+				return fmt.Errorf("'antenna_index' has no subfields, but %s were specified", subs)
+			}
+			if src != nil {
+				dst.AntennaIndex = src.AntennaIndex
+			} else {
+				var zero uint32
+				dst.AntennaIndex = zero
 			}
 		case "class":
 			if len(subs) > 0 {
@@ -935,25 +945,25 @@ func (dst *TxSettings) SetFields(src *TxSettings, paths ...string) error {
 			} else {
 				dst.Time = nil
 			}
-		case "scheduled":
+		case "request_info":
 			if len(subs) > 0 {
-				newDst := dst.Scheduled
+				newDst := dst.RequestInfo
 				if newDst == nil {
-					newDst = &Scheduled{}
-					dst.Scheduled = newDst
+					newDst = &RequestInfo{}
+					dst.RequestInfo = newDst
 				}
-				var newSrc *Scheduled
+				var newSrc *RequestInfo
 				if src != nil {
-					newSrc = src.Scheduled
+					newSrc = src.RequestInfo
 				}
 				if err := newDst.SetFields(newSrc, subs...); err != nil {
 					return err
 				}
 			} else {
 				if src != nil {
-					dst.Scheduled = src.Scheduled
+					dst.RequestInfo = src.RequestInfo
 				} else {
-					dst.Scheduled = nil
+					dst.RequestInfo = nil
 				}
 			}
 
