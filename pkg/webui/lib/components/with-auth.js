@@ -49,7 +49,7 @@ class Auth extends React.PureComponent {
       const redirectPath = window.location.pathname.substring(env.app_root.length)
       let loc = `${env.app_root}/login`
       if (redirectPath !== '') {
-        loc += `?path=${redirectPath}`
+        loc += `?next=${redirectPath}`
       }
 
       // We need a full reload here to ensure the new state cookie is being set
