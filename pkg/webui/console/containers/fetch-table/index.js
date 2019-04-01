@@ -185,6 +185,7 @@ class FetchTable extends Component {
       headers,
       tabs,
       searchable,
+      handlePagination,
     } = this.props
     const { page, query, tab } = this.state
 
@@ -236,6 +237,7 @@ class FetchTable extends Component {
           headers={headers}
           data={items}
           emptyMessage={sharedMessages.noMatch}
+          handlePagination={handlePagination}
         />
       </div>
     )
